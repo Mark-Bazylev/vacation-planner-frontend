@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosRequestConfig } from "axios";
+import { enqueueSnackbar } from "notistack";
 
 class HttpService {
   private service: AxiosInstance;
@@ -10,7 +11,13 @@ class HttpService {
     this.service.interceptors.response.use(undefined, this.errorInterceptor);
   }
   errorInterceptor(error: any) {
-    console.error(`Interceptor error: ${error}`);
+    const errorMessage = error.response.data.message;
+    console.error(`Interceptor error `, errorMessage);
+    enqueueSnackbar(errorMessage, {
+      variant: "error",
+      autoHideDuration: 6000,
+      anchorOrigin: { horizontal: "center", vertical: "bottom" },
+    });
   }
 
   setAuthToken(token: string | null) {

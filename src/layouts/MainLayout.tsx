@@ -1,13 +1,12 @@
-import {Outlet} from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
-
-export default function MainLayout(){
-    return (
-        <div>Hi
-        <div>
-            <Outlet/>
-        </div></div>
-    )
+export default function MainLayout() {
+  return (
+    <div>
+      Hi
+      <div>
+        <Outlet />
+      </div>
+    </div>
+  );
 }
-
-
