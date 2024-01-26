@@ -7,7 +7,7 @@ export default function AuthLayout() {
   const navigate = useNavigate();
   useEffect(() => {
     if (location.pathname === "/auth") navigate("/auth/login");
-  }, [navigate, location]);
+  }, [navigate, location.pathname]);
   return (
     <Container
       maxWidth={false}

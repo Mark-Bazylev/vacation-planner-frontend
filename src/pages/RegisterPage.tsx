@@ -1,5 +1,5 @@
 import React from "react";
-import { login } from "../redux/authentication/authSlice";
+import { createAccount } from "../redux/authentication/authSlice";
 import { useAppDispatch } from "../redux/hooks";
 import {
   Avatar,
@@ -18,13 +18,10 @@ import {
   Typography,
 } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  LoginParams,
-  RegisterParams,
-} from "../services/authService/auth-service";
+import { CreateAccountParams } from "../services/authService/auth-service";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { emailRegex } from "../utils";
 interface LoginPageProps {}
 
@@ -45,20 +42,22 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterParams>();
-
-  const onRegister: SubmitHandler<RegisterParams> = async (credentials) => {
-    // try {
-    //   const res = await dispatch(login(credentials)).unwrap();
-    //   console.log(res);
-    // } catch (e) {
-    //   console.log(e);
-    // }
+  } = useForm<CreateAccountParams>();
+  const navigate = useNavigate();
+  const onRegister: SubmitHandler<CreateAccountParams> = async (
+    credentials,
+  ) => {
+    try {
+      await dispatch(createAccount(credentials)).unwrap();
+      navigate("/home");
+    } catch (e) {
+      console.log(e);
+    }
   };
   return (
     <Paper sx={{ p: 3 }} elevation={8}>
       <Box component="form" noValidate onSubmit={handleSubmit(onRegister)}>
-        <Stack spacing={2} alignItems={"center"}>
+        <Stack spacing={1} alignItems={"center"}>
           <Box
             sx={{
               display: "flex",
@@ -153,24 +152,15 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
               {errors.password?.message || " "}
             </FormHelperText>
           </FormControl>
+          <NavLink to={"/auth/login"}>Already have an Account? Log In</NavLink>
+          <Divider flexItem />
           <Button
             variant="contained"
             color="primary"
             type="submit"
             fullWidth={true}
           >
-            Sign In
-          </Button>
-
-          <Divider flexItem />
-          <Button
-            component={NavLink}
-            to={"/auth/register"}
-            variant="contained"
-            color="success"
-            fullWidth={true}
-          >
-            Create a new account
+            Create Account
           </Button>
         </Stack>
       </Box>

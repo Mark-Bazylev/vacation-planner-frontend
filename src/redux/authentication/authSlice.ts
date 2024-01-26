@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import {
   authService,
   LoginParams,
+  CreateAccountParams,
 } from "../../services/authService/auth-service";
 
 enum UserRole {
@@ -22,17 +23,13 @@ interface AuthSliceState {
   user: User | null;
 }
 
-const initialState: AuthSliceState = {
-  token: "",
-  user: getUserFromToken(authService.getAuthToken()),
-};
 function getUserFromToken(token: string | null) {
   if (token) {
     try {
       const tokenData = jwtDecode<{ user: User; iat: number; exp: number }>(
         token,
       );
-      if (tokenData.exp * 1000 < Date.now()) {
+      if (tokenData.exp * 1000 > Date.now()) {
         return tokenData.user;
       } else {
         console.log("token is expired");
@@ -43,7 +40,10 @@ function getUserFromToken(token: string | null) {
   }
   return null;
 }
-
+const initialState: AuthSliceState = {
+  token: "",
+  user: getUserFromToken(authService.getAuthToken()),
+};
 const authSlice = createAppSlice({
   name: "auth",
   initialState,
@@ -56,19 +56,25 @@ const authSlice = createAppSlice({
         fulfilled(state, action) {
           state.user = getUserFromToken(action.payload.token);
         },
-        // settled(state, action) {
-        //   console.log("settled");
-        // },
-        // pending(state) {
-        //   console.log("pending");
-        // },
-        // rejected(state, action) {
-        //   console.log("rejected");
-        // },
+      },
+    ),
+    createAccount: create.asyncThunk(
+      async ({ firstName, lastName, email, password }: CreateAccountParams) => {
+        return await authService.createAccount({
+          firstName,
+          lastName,
+          email,
+          password,
+        });
+      },
+      {
+        fulfilled(state, action) {
+          state.user = getUserFromToken(action.payload.token);
+        },
       },
     ),
   }),
 });
-export const { login } = authSlice.actions;
+export const { login, createAccount } = authSlice.actions;
 
 export default authSlice.reducer;

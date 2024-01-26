@@ -1,6 +1,6 @@
 import React from "react";
 import { login } from "../redux/authentication/authSlice";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   Avatar,
   Box,
@@ -21,7 +21,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { LoginParams } from "../services/authService/auth-service";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { emailRegex } from "../utils";
 interface LoginPageProps {}
 
@@ -44,10 +44,12 @@ const LoginPage: React.FC<LoginPageProps> = () => {
     formState: { errors },
   } = useForm<LoginParams>();
 
+  const navigate = useNavigate();
+  const user = useAppSelector((state) => state.auth.user);
   const onLogin: SubmitHandler<LoginParams> = async (credentials) => {
     try {
-      const res = await dispatch(login(credentials)).unwrap();
-      console.log(res);
+      await dispatch(login(credentials)).unwrap();
+      navigate("/home");
     } catch (e) {
       console.log(e);
     }
@@ -56,6 +58,16 @@ const LoginPage: React.FC<LoginPageProps> = () => {
     <Paper sx={{ p: 3 }} elevation={8}>
       <Box component="form" noValidate onSubmit={handleSubmit(onLogin)}>
         <Stack spacing={2} alignItems={"center"}>
+          {!!user && (
+            <Button
+              component={NavLink}
+              variant={"contained"}
+              to={"/home"}
+              fullWidth={true}
+            >
+              Continue as {user.firstName}
+            </Button>
+          )}
           <Box
             sx={{
               display: "flex",

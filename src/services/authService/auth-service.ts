@@ -1,12 +1,11 @@
 import { httpService } from "../http-service";
-import { jwtDecode } from "jwt-decode/build/esm";
 
 export interface LoginParams {
   email: string;
   password: string;
 }
 
-export interface RegisterParams extends LoginParams {
+export interface CreateAccountParams extends LoginParams {
   firstName: string;
   lastName: string;
 }
@@ -36,7 +35,7 @@ class AuthService {
     return res.data;
   }
 
-  async register(data: RegisterParams) {
+  async createAccount(data: CreateAccountParams) {
     const res = await httpService.post<{ token: string }>(
       "auth/register",
       data,
