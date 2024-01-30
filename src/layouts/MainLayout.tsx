@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
+import { Container } from "@mui/material";
 
 export default function MainLayout() {
   return (
-    <div>
-      This is the Main Layout
-      <div>
-        <Outlet />
-      </div>
-    </div>
+    <Container
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
+      <Outlet />
+    </Container>
   );
 }

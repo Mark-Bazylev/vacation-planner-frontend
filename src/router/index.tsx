@@ -22,18 +22,18 @@ export const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: "/auth",
-        element: <AuthLayout />,
+    ],
+  },
+  {
+    path: "/auth",
+    element: <AuthLayout />,
 
-        children: [
-          {
-            path: "login",
-            element: <LoginPage />,
-          },
-          { path: "register", element: <RegisterPage /> },
-        ],
+    children: [
+      {
+        path: "login",
+        element: <LoginPage />,
       },
+      { path: "register", element: <RegisterPage /> },
     ],
   },
   {

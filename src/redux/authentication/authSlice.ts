@@ -23,23 +23,6 @@ interface AuthSliceState {
   user: User | null;
 }
 
-function getUserFromToken(token: string | null) {
-  if (token) {
-    try {
-      const tokenData = jwtDecode<{ user: User; iat: number; exp: number }>(
-        token,
-      );
-      if (tokenData.exp * 1000 > Date.now()) {
-        return tokenData.user;
-      } else {
-        console.log("token is expired");
-      }
-    } catch (error) {
-      console.error("token is invalid");
-    }
-  }
-  return null;
-}
 const initialState: AuthSliceState = {
   token: "",
   user: getUserFromToken(authService.getAuthToken()),
@@ -75,6 +58,23 @@ const authSlice = createAppSlice({
     ),
   }),
 });
+
+function getUserFromToken(token: string | null) {
+  if (token) {
+    try {
+      const tokenData = jwtDecode<{ user: User; iat: number; exp: number }>(token);
+      if (tokenData.exp * 1000 > Date.now()) {
+        return tokenData.user;
+      } else {
+        console.log("token is expired");
+      }
+    } catch (error) {
+      console.error("token is invalid");
+    }
+  }
+  return null;
+}
+
 export const { login, createAccount } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -84,7 +84,7 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
             fullWidth={true}
             type="text"
             label="First Name"
-            {...register("lastName", {
+            {...register("firstName", {
               required: "First Name must be provided",
             })}
             error={!!errors.firstName}
@@ -94,7 +94,7 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
             fullWidth={true}
             type="text"
             label="Last Name"
-            {...register("firstName", {
+            {...register("lastName", {
               required: "First Name must be provided",
             })}
             error={!!errors.lastName}
