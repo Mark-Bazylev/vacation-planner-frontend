@@ -6,6 +6,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFoundPage from "../pages/NotFoundPage";
+import { VacationsReportPage } from "../pages/VacationsReportPage";
 
 export const RouteNames = {};
 export const router = createBrowserRouter([
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
           {
             path: "home",
             element: <HomePage />,
+          },
+          {
+            path: "vacationsReport",
+            element: <VacationsReportPage />,
           },
         ],
       },

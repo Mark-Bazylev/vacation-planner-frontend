@@ -11,13 +11,14 @@ class HttpService {
     this.service.interceptors.response.use(undefined, this.errorInterceptor);
   }
   errorInterceptor(error: any) {
-    const errorMessage = error.response.data.message;
+    const errorMessage = error.response?.data?.message || error.message || "";
     console.error(`Interceptor error `, errorMessage);
     enqueueSnackbar(errorMessage, {
       variant: "error",
       autoHideDuration: 6000,
       anchorOrigin: { horizontal: "center", vertical: "bottom" },
     });
+    return Promise.reject(error);
   }
 
   setAuthToken(token: string | null) {

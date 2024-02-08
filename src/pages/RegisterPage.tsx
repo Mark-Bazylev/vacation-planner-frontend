@@ -32,9 +32,7 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -44,14 +42,13 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
     formState: { errors },
   } = useForm<CreateAccountParams>();
   const navigate = useNavigate();
-  const onRegister: SubmitHandler<CreateAccountParams> = async (
-    credentials,
-  ) => {
+  const onRegister: SubmitHandler<CreateAccountParams> = async (credentials) => {
     try {
       await dispatch(createAccount(credentials)).unwrap();
       navigate("/home");
     } catch (e) {
       console.log(e);
+    } finally {
     }
   };
   return (
@@ -116,15 +113,8 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
             helperText={errors.email?.message || " "}
           />
 
-          <FormControl
-            sx={{ m: 1, minWidth: "25ch" }}
-            fullWidth={true}
-            variant="outlined"
-          >
-            <InputLabel
-              error={!!errors.password}
-              htmlFor="outlined-adornment-password"
-            >
+          <FormControl sx={{ m: 1, minWidth: "25ch" }} fullWidth={true} variant="outlined">
+            <InputLabel error={!!errors.password} htmlFor="outlined-adornment-password">
               Password
             </InputLabel>
             <OutlinedInput
@@ -148,18 +138,11 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
               }
               label="Password"
             />
-            <FormHelperText error={true}>
-              {errors.password?.message || " "}
-            </FormHelperText>
+            <FormHelperText error={true}>{errors.password?.message || " "}</FormHelperText>
           </FormControl>
           <NavLink to={"/auth/login"}>Already have an Account? Log In</NavLink>
           <Divider flexItem />
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullWidth={true}
-          >
+          <Button variant="contained" color="primary" type="submit" fullWidth={true}>
             Create Account
           </Button>
         </Stack>

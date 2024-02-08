@@ -21,6 +21,7 @@ class AuthService {
   }
 
   setAuthToken(token: string | null) {
+    console.log("got here", token);
     if (token) {
       window.localStorage.setItem(AUTH_TOKEN_KEY, token);
     } else {
@@ -36,10 +37,7 @@ class AuthService {
   }
 
   async createAccount(data: CreateAccountParams) {
-    const res = await httpService.post<{ token: string }>(
-      "auth/register",
-      data,
-    );
+    const res = await httpService.post<{ token: string }>("auth/register", data);
     this.setAuthToken(res.data.token);
     return res.data;
   }

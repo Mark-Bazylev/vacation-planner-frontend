@@ -31,6 +31,10 @@ const authSlice = createAppSlice({
   name: "auth",
   initialState,
   reducers: (create) => ({
+    signOut: create.reducer((state) => {
+      authService.setAuthToken(null);
+      state.user = getUserFromToken(authService.getAuthToken());
+    }),
     login: create.asyncThunk(
       async ({ email, password }: LoginParams, thunkAPI) => {
         return await authService.login({ email, password });
@@ -75,6 +79,6 @@ function getUserFromToken(token: string | null) {
   return null;
 }
 
-export const { login, createAccount } = authSlice.actions;
+export const { login, createAccount, signOut } = authSlice.actions;
 
 export default authSlice.reducer;
