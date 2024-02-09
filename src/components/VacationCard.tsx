@@ -49,7 +49,7 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
   return (
     <Card
       sx={{
-        maxWidth: { sm: "500px", md: "400px", lg: "300px" },
+        width: { sm: "500px", md: "400px", lg: "300px" },
         m: 4,
       }}
     >
@@ -72,20 +72,20 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
       >
         {user?.role === "user" ? (
           <>
-            {" "}
             <Chip
               sx={{ maxWidth: "90px" }}
               icon={
                 isLoadingFollow ? (
                   <CircularProgress size={"24px"} />
                 ) : (
-                  <FavoriteIcon color={isFollowed ? "error" : "info"} />
+                  <FavoriteIcon color={isFollowed ? "error" : "success"} />
                 )
               }
               variant={"filled"}
               color={isFollowed ? "warning" : "info"}
-              label={`Like ${vacationDetails.followers.length || "0"}`}
+              label={`Like ${vacationDetails.followers.length}`}
               onClick={handleFollow}
+              disabled={isLoadingFollow}
             />
           </>
         ) : (
@@ -94,7 +94,7 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
               sx={{ maxWidth: "90px", mr: 1 }}
               icon={<EditIcon />}
               variant={"filled"}
-              color={"info"}
+              color={"primary"}
               label={`Edit`}
               onClick={() => setOpenDialog(true)}
             />
@@ -102,7 +102,7 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
               sx={{ maxWidth: "90px" }}
               icon={<DeleteIcon />}
               variant={"filled"}
-              color={"info"}
+              color={"primary"}
               label={`Delete`}
               onClick={() => setOpenDeleteDialog(true)}
             />
@@ -117,7 +117,7 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
         sx={{
           position: "relative",
           top: -10,
-          bgcolor: "lightskyblue",
+          bgcolor: "secondary.main",
           borderRadius: 2,
           display: "flex",
         }}
@@ -141,14 +141,16 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
       </CardContent>
       <Box sx={{ display: "flex", justifyContent: "center", mt: -3, px: 1, py: 2 }}>
         <Button variant={"contained"} sx={{ width: "80%" }}>
-          {vacationDetails.price}
+          {vacationDetails.price}$
         </Button>
       </Box>
-      <VacationDialogForm
-        vacation={vacationDetails}
-        open={openDialog}
-        onClose={handleCloseDialog}
-      />
+      {openDialog && (
+        <VacationDialogForm
+          vacation={vacationDetails}
+          open={openDialog}
+          onClose={handleCloseDialog}
+        />
+      )}
       <VacationDialogDeleteWarning
         open={openDeleteDialog}
         onClose={handleCloseDeleteDialog}

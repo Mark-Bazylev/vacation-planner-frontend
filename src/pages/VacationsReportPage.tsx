@@ -1,4 +1,4 @@
-import { Button, Container } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import React, { useEffect, useMemo } from "react";
@@ -39,6 +39,7 @@ export function VacationsReportPage() {
         alignItems: "center",
       }}
     >
+      <Typography variant={"h2"}>Vacations Report</Typography>
       <BarChart
         xAxis={[{ scaleType: "band", data: destinationArray }]}
         series={[{ data: followersCountArray }]}

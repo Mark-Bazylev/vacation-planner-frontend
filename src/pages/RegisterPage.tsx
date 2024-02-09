@@ -53,7 +53,7 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
   };
   return (
     <Paper sx={{ p: 3 }} elevation={8}>
-      <Box component="form" noValidate onSubmit={handleSubmit(onRegister)}>
+      <Box sx={{ width: "250px" }} component="form" noValidate onSubmit={handleSubmit(onRegister)}>
         <Stack spacing={1} alignItems={"center"}>
           <Box
             sx={{
@@ -122,6 +122,7 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
               type={showPassword ? "text" : "password"}
               {...register("password", {
                 required: "Password must be provided",
+                minLength: { value: 4, message: "Password must be at least 4 characters long" },
               })}
               error={!!errors.password}
               endAdornment={
@@ -138,7 +139,9 @@ const RegisterPage: React.FC<LoginPageProps> = () => {
               }
               label="Password"
             />
-            <FormHelperText error={true}>{errors.password?.message || " "}</FormHelperText>
+            <FormHelperText sx={{ height: "40px" }} error={true}>
+              {errors.password?.message}
+            </FormHelperText>
           </FormControl>
           <NavLink to={"/auth/login"}>Already have an Account? Log In</NavLink>
           <Divider flexItem />

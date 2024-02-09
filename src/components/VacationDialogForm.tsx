@@ -1,4 +1,14 @@
-import { Button, Dialog, DialogActions, DialogTitle, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  FormHelperText,
+  InputAdornment,
+  Stack,
+  TextField,
+} from "@mui/material";
 
 //Date Range Imports
 import { DateRange, RangeKeyDict } from "react-date-range";
@@ -34,7 +44,7 @@ export default function VacationDialogForm(props: VacationDialogProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<VacationDetails>();
+  } = useForm<VacationDetails & { imageFile: File }>({ defaultValues: vacation });
   useEffect(() => {
     if (vacation) {
       setDateRangeArray([
@@ -92,7 +102,6 @@ export default function VacationDialogForm(props: VacationDialogProps) {
         <TextField
           type="text"
           label="Destination"
-          defaultValue={vacation?.destination}
           {...register("destination", {
             required: "Destination must be provided",
           })}
@@ -102,7 +111,6 @@ export default function VacationDialogForm(props: VacationDialogProps) {
         <TextField
           type="text"
           label="Description"
-          defaultValue={vacation?.description}
           {...register("description", {
             required: "Description must be provided",
           })}
@@ -112,17 +120,28 @@ export default function VacationDialogForm(props: VacationDialogProps) {
         <TextField
           type="number"
           label="Price"
-          defaultValue={vacation?.price}
+          InputProps={{
+            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+          }}
           {...register("price", {
             required: "Price must be provided",
-            max: 10000,
-            min: 0,
+            max: { value: 10000, message: "Price must be below 10000$" },
+            min: { value: 1, message: "Price must be at least 1$" },
           })}
           error={!!errors.price}
           helperText={errors.price?.message || " "}
         />
-
-        <FileInput vacationImage={vacation?.imageName} onFileInput={handleFileInput} />
+        <FileInput
+          vacationImage={vacation?.imageName}
+          onFileInput={handleFileInput}
+          {...register("imageFile", {
+            required: {
+              value: !vacation?.imageName,
+              message: "Image must be provide",
+            },
+          })}
+        />
+        <FormHelperText error>{errors.imageFile?.message}</FormHelperText>
         <DateRange
           editableDateInputs={true}
           onChange={handleDateRange}

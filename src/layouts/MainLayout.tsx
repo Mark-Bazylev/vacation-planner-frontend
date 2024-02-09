@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useState } from "react";
 import VacationDialogForm from "../components/VacationDialogForm";
 import { signOut } from "../redux/authentication/authSlice";
+import { grey } from "@mui/material/colors";
 
 const StyledGrid = styled(Grid)({
   display: "flex",
@@ -90,17 +91,20 @@ export default function MainLayout() {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Container
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Outlet />
-      </Container>
-      <VacationDialogForm open={openDialog} onClose={handleCloseDialog} />
+      <Box sx={{ bgcolor: grey[100] }}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "transparent",
+          }}
+        >
+          <Outlet />
+        </Container>
+      </Box>
+      {openDialog && <VacationDialogForm open={openDialog} onClose={handleCloseDialog} />}
     </Box>
   );
 }

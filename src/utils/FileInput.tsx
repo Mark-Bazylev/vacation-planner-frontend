@@ -1,18 +1,20 @@
-import { useState, ChangeEvent } from "react";
-import { Box, Button, Stack, Typography } from "@mui/material";
+import React, { useState, ChangeEvent, forwardRef, LegacyRef } from "react";
+import { Box, Button, FormHelperText, Stack, Typography } from "@mui/material";
+import { UseFormRegisterReturn } from "react-hook-form/dist/types/form";
 
-interface InputProps {
+interface InputProps extends Omit<UseFormRegisterReturn<"imageFile">, "ref"> {
   onFileInput: (url: File) => void;
   vacationImage?: string;
 }
-export default function FileInput(props: InputProps) {
-  const { onFileInput, vacationImage } = props;
+const FileInput = forwardRef((props: InputProps, ref) => {
+  const { onFileInput, vacationImage, onChange, ...rest } = props;
   const [imageUrl, setImageUrl] = useState("");
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const selectedImage = e.target.files?.[0] || null;
     if (selectedImage) {
       setImageUrl(URL.createObjectURL(selectedImage));
       onFileInput(selectedImage);
+      onChange(e);
     }
   }
 
@@ -29,11 +31,13 @@ export default function FileInput(props: InputProps) {
       }}
     >
       <input
+        ref={ref as LegacyRef<HTMLInputElement>}
         accept="image/*"
         type="file"
         id="select-image"
         style={{ display: "none" }}
         onChange={handleInputChange}
+        {...rest}
       />
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Typography sx={{ mr: 2 }} variant={"h6"}>
@@ -58,4 +62,6 @@ export default function FileInput(props: InputProps) {
       )}
     </Stack>
   );
-}
+});
+
+export default FileInput;

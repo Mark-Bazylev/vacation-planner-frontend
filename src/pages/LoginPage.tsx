@@ -32,9 +32,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
 
@@ -56,15 +54,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
   };
   return (
     <Paper sx={{ p: 3 }} elevation={8}>
-      <Box component="form" noValidate onSubmit={handleSubmit(onLogin)}>
+      <Box sx={{ width: "250px" }} component="form" noValidate onSubmit={handleSubmit(onLogin)}>
         <Stack spacing={2} alignItems={"center"}>
           {!!user && (
-            <Button
-              component={NavLink}
-              variant={"contained"}
-              to={"/home"}
-              fullWidth={true}
-            >
+            <Button component={NavLink} variant={"contained"} to={"/home"} fullWidth={true}>
               Continue as {user.firstName}
             </Button>
           )}
@@ -106,15 +99,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             helperText={errors.email?.message || " "}
           />
 
-          <FormControl
-            sx={{ m: 1, minWidth: "25ch" }}
-            fullWidth={true}
-            variant="outlined"
-          >
-            <InputLabel
-              error={!!errors.password}
-              htmlFor="outlined-adornment-password"
-            >
+          <FormControl sx={{ m: 1, minWidth: "25ch" }} fullWidth={true} variant="outlined">
+            <InputLabel error={!!errors.password} htmlFor="outlined-adornment-password">
               Password
             </InputLabel>
             <OutlinedInput
@@ -122,6 +108,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               type={showPassword ? "text" : "password"}
               {...register("password", {
                 required: "Password must be provided",
+                minLength: { value: 4, message: "Password must be at least 4 characters long" },
               })}
               error={!!errors.password}
               endAdornment={
@@ -138,16 +125,11 @@ const LoginPage: React.FC<LoginPageProps> = () => {
               }
               label="Password"
             />
-            <FormHelperText error={true}>
-              {errors.password?.message || " "}
+            <FormHelperText sx={{ whiteSpace: "wrap", height: "40px" }} error={true}>
+              {errors.password?.message}
             </FormHelperText>
           </FormControl>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            fullWidth={true}
-          >
+          <Button variant="contained" color="primary" type="submit" fullWidth={true}>
             Sign In
           </Button>
 
