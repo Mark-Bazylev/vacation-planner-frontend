@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -32,7 +31,6 @@ export interface VacationDialogProps {
 export default function VacationDialogForm(props: VacationDialogProps) {
   const dispatch = useAppDispatch();
   const { open, onClose, vacation } = props;
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [dateRangeArray, setDateRangeArray] = useState<Range[]>([
     {
       startDate: new Date(),
@@ -44,7 +42,7 @@ export default function VacationDialogForm(props: VacationDialogProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<VacationDetails & { imageFile: File }>({ defaultValues: vacation });
+  } = useForm<VacationDetails & { imageFile: FileList }>({ defaultValues: vacation });
   useEffect(() => {
     if (vacation) {
       setDateRangeArray([
@@ -57,17 +55,18 @@ export default function VacationDialogForm(props: VacationDialogProps) {
     }
   }, [vacation]);
 
-  const onFormSubmit: SubmitHandler<VacationDetails> = async (credentials) => {
+  const onFormSubmit: SubmitHandler<VacationDetails & { imageFile: FileList }> = async (
+    credentials,
+  ) => {
     try {
       credentials.checkIn = dateRangeArray[0].startDate as Date;
       credentials.checkOut = dateRangeArray[0].endDate as Date;
-      credentials.imageName = "";
       console.log("Hi man", credentials);
       if (vacation) {
         credentials._id = vacation._id;
-        await dispatch(editVacation({ vacation: credentials, imageFile }));
+        await dispatch(editVacation(credentials));
       } else {
-        await dispatch(addVacation({ vacation: credentials, imageFile }));
+        await dispatch(addVacation(credentials));
       }
       handleClose();
     } catch (e) {
@@ -83,9 +82,7 @@ export default function VacationDialogForm(props: VacationDialogProps) {
   const handleDateRange = (item: RangeKeyDict) => {
     setDateRangeArray([item.selection]);
   };
-  function handleFileInput(imageFile: File) {
-    setImageFile(imageFile);
-  }
+
   return (
     <Dialog
       open={open}
@@ -133,11 +130,10 @@ export default function VacationDialogForm(props: VacationDialogProps) {
         />
         <FileInput
           vacationImage={vacation?.imageName}
-          onFileInput={handleFileInput}
           {...register("imageFile", {
             required: {
               value: !vacation?.imageName,
-              message: "Image must be provide",
+              message: "Image must be provided",
             },
           })}
         />

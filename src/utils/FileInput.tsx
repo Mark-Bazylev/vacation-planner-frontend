@@ -1,19 +1,17 @@
 import React, { useState, ChangeEvent, forwardRef, LegacyRef } from "react";
-import { Box, Button, FormHelperText, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { UseFormRegisterReturn } from "react-hook-form/dist/types/form";
 
 interface InputProps extends Omit<UseFormRegisterReturn<"imageFile">, "ref"> {
-  onFileInput: (url: File) => void;
   vacationImage?: string;
 }
 const FileInput = forwardRef((props: InputProps, ref) => {
-  const { onFileInput, vacationImage, onChange, ...rest } = props;
+  const { vacationImage, onChange, ...rest } = props;
   const [imageUrl, setImageUrl] = useState("");
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
     const selectedImage = e.target.files?.[0] || null;
     if (selectedImage) {
       setImageUrl(URL.createObjectURL(selectedImage));
-      onFileInput(selectedImage);
       onChange(e);
     }
   }
@@ -52,12 +50,16 @@ const FileInput = forwardRef((props: InputProps, ref) => {
 
       {imageUrl && (
         <Box mt={2} textAlign="center">
-          <img src={imageUrl} height="200px" />
+          <img src={imageUrl} alt={"imageUrl in here"} height="200px" />
         </Box>
       )}
       {vacationImage && !imageUrl && (
         <Box mt={2} textAlign="center">
-          <img src={process.env.REACT_APP_IMAGE_URL + vacationImage} height="200px" />
+          <img
+            alt={"vacationImage in here"}
+            src={process.env.REACT_APP_IMAGE_URL + vacationImage}
+            height="200px"
+          />
         </Box>
       )}
     </Stack>

@@ -23,8 +23,8 @@ const vacationSlice = createAppSlice({
   initialState,
   reducers: (create) => ({
     addVacation: create.asyncThunk(
-      async ({ vacation, imageFile }: { vacation: VacationDetails; imageFile: File | null }) => {
-        return await vacationService.addVacation(vacation, imageFile);
+      async (vacation: VacationDetails & { imageFile: FileList }) => {
+        return await vacationService.addVacation(vacation);
       },
       {
         fulfilled(state, action) {
@@ -34,8 +34,8 @@ const vacationSlice = createAppSlice({
       },
     ),
     editVacation: create.asyncThunk(
-      async ({ vacation, imageFile }: { vacation: VacationDetails; imageFile: File | null }) => {
-        return await vacationService.editVacation(vacation, imageFile);
+      async (vacation: VacationDetails & { imageFile: FileList }) => {
+        return await vacationService.editVacation(vacation);
       },
       {
         fulfilled(state, action) {
