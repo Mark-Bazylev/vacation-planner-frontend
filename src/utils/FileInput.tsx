@@ -55,11 +55,7 @@ const FileInput = forwardRef((props: InputProps, ref) => {
       )}
       {vacationImage && !imageUrl && (
         <Box mt={2} textAlign="center">
-          <img
-            alt={"vacationImage in here"}
-            src={process.env.REACT_APP_IMAGE_URL + vacationImage}
-            height="200px"
-          />
+          <img alt={"vacationImage in here"} src={vacationImage} height="200px" />
         </Box>
       )}
     </Stack>

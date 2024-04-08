@@ -29,7 +29,7 @@ function App() {
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FF6F61",
+      main: "#Da96EB",
       light: "#FFA69E",
       dark: "#D6403E",
       contrastText: "#FFFFFF", // White text for light backgrounds
