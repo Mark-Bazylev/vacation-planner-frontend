@@ -35,7 +35,6 @@ export default function MainLayout() {
     setOpenDialog(false);
   }
   function handleSignOut() {
-    console.log("hi");
     dispatch(signOut());
   }
   return (

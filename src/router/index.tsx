@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
 import HomePage from "../pages/HomePage";
@@ -8,7 +8,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFoundPage from "../pages/NotFoundPage";
 import { VacationsReportPage } from "../pages/VacationsReportPage";
 
-export const RouteNames = {};
 export const router = createBrowserRouter([
   {
     path: "/",

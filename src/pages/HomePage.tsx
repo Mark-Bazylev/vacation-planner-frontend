@@ -1,23 +1,27 @@
 import VacationCard from "../components/VacationCard";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { ChangeEvent, useEffect, useState } from "react";
-import { getVacation, getVacationsByPage } from "../redux/vacation/vacationSlice";
+import { getVacationsByPage } from "../redux/vacation/vacationSlice";
 import { PageQuery } from "../services/vacationService/vacation-service";
 import {
   AppBar,
   Box,
-  Container,
+  CircularProgress,
   FormControlLabel,
   FormGroup,
   Pagination,
   Stack,
   Switch,
+  Typography,
 } from "@mui/material";
+import { Backdrop } from "@mui/material";
+import { grey } from "@mui/material/colors";
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
-  const { vacations, vacationsCount, currentVacation } = useAppSelector((state) => state.vacations);
+  const { vacations, vacationsCount } = useAppSelector((state) => state.vacations);
   const user = useAppSelector((state) => state.auth.user);
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState<PageQuery>({
     pageIndex: 1,
@@ -49,17 +53,21 @@ export default function HomePage() {
   useEffect(() => {
     async function getVacations() {
       try {
+        setIsLoading(true);
         await dispatch(getVacationsByPage(filter)).unwrap();
       } catch (e) {
         console.log(e);
+      } finally {
+        setIsLoading(false);
       }
     }
     getVacations();
-  }, [filter, currentVacation]);
+  }, [filter]);
   async function handlePage(event: ChangeEvent<unknown>, pageNumber: number) {
     try {
       setFilter({ ...filter, pageIndex: pageNumber });
     } catch (e) {
+      console.log(e);
     } finally {
       setPage(pageNumber);
     }
@@ -148,6 +156,20 @@ export default function HomePage() {
           return <VacationCard key={vacation._id} vacation={vacation} />;
         })}
       </Box>
+      <Backdrop
+        sx={{
+          bgcolor: "rgba(255, 255, 255, 0.7)",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isLoading}
+      >
+        <Stack spacing={2}>
+          <CircularProgress color="primary" size={64} />
+          <Typography sx={{ fontWeight: "bold" }} fontSize={18} color={grey[500]}>
+            Loading...
+          </Typography>
+        </Stack>
+      </Backdrop>
     </>
   );
 }

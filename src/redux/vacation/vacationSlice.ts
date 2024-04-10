@@ -29,7 +29,6 @@ const vacationSlice = createAppSlice({
       {
         fulfilled(state, action) {
           state.currentVacation = action.payload.vacation;
-          console.log(state.vacations);
         },
       },
     ),
@@ -81,7 +80,6 @@ const vacationSlice = createAppSlice({
         fulfilled(state, action) {
           state.vacations = action.payload.vacations;
           state.vacationsCount = action.payload.count;
-          console.log(state.vacations, state.currentVacation);
         },
       },
     ),
@@ -118,7 +116,6 @@ const vacationSlice = createAppSlice({
   }),
 });
 export const {
-  getVacation,
   getVacationsByPage,
   getVacationsReport,
   followVacation,

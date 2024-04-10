@@ -2,6 +2,8 @@ import { Button, Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/
 
 import { useAppDispatch } from "../redux/hooks";
 import { deleteVacation } from "../redux/vacation/vacationSlice";
+import { LoadingButton } from "@mui/lab";
+import { useState } from "react";
 
 export interface VacationDialogProps {
   open: boolean;
@@ -11,14 +13,17 @@ export interface VacationDialogProps {
 export default function VacationDialogDeleteWarning(props: VacationDialogProps) {
   const dispatch = useAppDispatch();
   const { open, onClose, vacationId } = props;
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
       await dispatch(deleteVacation(vacationId));
       handleClose();
     } catch (e) {
       console.log(e);
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -31,9 +36,14 @@ export default function VacationDialogDeleteWarning(props: VacationDialogProps) 
       <DialogTitle sx={{ color: "red" }}>Delete Vacation</DialogTitle>
       <DialogContent>Are you sure you want to delete this vacation?</DialogContent>
       <DialogActions>
-        <Button variant={"contained"} color={"error"} onClick={handleDelete}>
+        <LoadingButton
+          variant={"contained"}
+          color={"error"}
+          loading={isLoading}
+          onClick={handleDelete}
+        >
           Delete
-        </Button>
+        </LoadingButton>
         <Button onClick={handleClose}>Cancel</Button>
       </DialogActions>
     </Dialog>

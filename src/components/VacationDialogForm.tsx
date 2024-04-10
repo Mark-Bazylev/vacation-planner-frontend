@@ -1,5 +1,4 @@
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -22,6 +21,7 @@ import { VacationDetails } from "../services/vacationService/vacation-service";
 import FileInput from "../utils/FileInput";
 import { addVacation, editVacation } from "../redux/vacation/vacationSlice";
 import { useAppDispatch } from "../redux/hooks";
+import { LoadingButton } from "@mui/lab";
 
 export interface VacationDialogProps {
   open: boolean;
@@ -31,6 +31,7 @@ export interface VacationDialogProps {
 export default function VacationDialogForm(props: VacationDialogProps) {
   const dispatch = useAppDispatch();
   const { open, onClose, vacation } = props;
+  const [isLoading, setIsLoading] = useState(false);
   const [dateRangeArray, setDateRangeArray] = useState<Range[]>([
     {
       startDate: new Date(),
@@ -59,9 +60,9 @@ export default function VacationDialogForm(props: VacationDialogProps) {
     credentials,
   ) => {
     try {
+      setIsLoading(true);
       credentials.checkIn = dateRangeArray[0].startDate as Date;
       credentials.checkOut = dateRangeArray[0].endDate as Date;
-      console.log("Hi man", credentials);
       if (vacation) {
         credentials._id = vacation._id;
         await dispatch(editVacation(credentials));
@@ -72,6 +73,7 @@ export default function VacationDialogForm(props: VacationDialogProps) {
     } catch (e) {
       console.log(e);
     } finally {
+      setIsLoading(false);
     }
   };
 
@@ -146,7 +148,9 @@ export default function VacationDialogForm(props: VacationDialogProps) {
         />
       </Stack>
       <DialogActions>
-        <Button type="submit">Submit</Button>
+        <LoadingButton variant={"contained"} loading={isLoading} type="submit">
+          Submit
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

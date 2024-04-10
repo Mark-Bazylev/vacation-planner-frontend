@@ -36,7 +36,7 @@ class VacationService {
   async addVacation(vacation: VacationDetails & { imageFile: FileList }) {
     URL.revokeObjectURL(vacation.imageName);
 
-    const res = await httpService.post(
+    const res = await httpService.post<{ vacation: VacationDetails }>(
       "vacations/add",
       { ...vacation, imageFile: vacation.imageFile[0] },
       {
