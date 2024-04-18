@@ -87,14 +87,20 @@ function VacationListItem({ vacation }: { vacation: VacationDetails }) {
       />
 
       <ListItemText primary={`$ ${vacation.price}`} />
-
-      <ListItemText
-        primary={vacation.bookings[0].bookingStatus}
-        secondary={
-          vacation.bookings[0].bookingStatus === BookingStatus.pending &&
-          `expires in ${timeLeft} hours`
-        }
-      />
+      {timeLeft <= 0 && vacation.bookings[0].bookingStatus !== BookingStatus.rejected ? (
+        <ListItemText
+          primary={BookingStatus.rejected}
+          secondary={`expired ${-timeLeft} hours ago`}
+        />
+      ) : (
+        <ListItemText
+          primary={vacation.bookings[0].bookingStatus}
+          secondary={
+            vacation.bookings[0].bookingStatus === BookingStatus.pending &&
+            `expires in ${timeLeft} hours`
+          }
+        />
+      )}
     </ListItem>
   );
 }

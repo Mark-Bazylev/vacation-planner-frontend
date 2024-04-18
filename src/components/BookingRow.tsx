@@ -8,7 +8,10 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
+  Table,
+  TableBody,
   TableCell,
+  TableHead,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -65,11 +68,20 @@ export function BookingRow({ vacation }: { vacation: VacationDetails }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-                  {vacation.bookings?.map((booking) => (
-                    <BookingList key={booking._id} booking={booking} />
-                  ))}
-                </List>
+                <Table sx={{ width: "100%", bgcolor: "background.paper" }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Name</TableCell>
+                      <TableCell align="center">Message</TableCell>
+                      <TableCell align="right">Status</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {vacation.bookings?.map((booking) => (
+                      <BookingTableRow key={booking._id} booking={booking} />
+                    ))}
+                  </TableBody>
+                </Table>
               </Typography>
             </Box>
           </Collapse>
@@ -79,11 +91,12 @@ export function BookingRow({ vacation }: { vacation: VacationDetails }) {
   );
 }
 
-function BookingList({ booking }: { booking: Booking }) {
+function BookingTableRow({ booking }: { booking: Booking }) {
   const dispatch = useAppDispatch();
   const [statusDecided, setStatusDecided] = useState<BookingStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const timeLeft = timeUntilDeadline(new Date(booking.createdAt));
+
   async function handleStatus(bookingId: string, status: BookingStatus) {
     try {
       setLoading(true);
@@ -98,20 +111,24 @@ function BookingList({ booking }: { booking: Booking }) {
 
   return (
     <>
-      <ListItem>
-        <ListItemText primary={`${booking.user?.firstName} ${booking.user?.lastName}`} />
+      <TableRow>
+        <TableCell>{`${booking.user?.firstName} ${booking.user?.lastName}`} </TableCell>
+
         {loading ? (
-          <ListItemIcon sx={{ mr: 6 }}>
+          <TableCell sx={{ mr: 6 }}>
             <CircularProgress />
-          </ListItemIcon>
+          </TableCell>
         ) : (
           <>
             {statusDecided || booking.bookingStatus !== BookingStatus.pending ? (
-              <ListItemIcon>{statusDecided || booking.bookingStatus} </ListItemIcon>
+              <>
+                <TableCell align="center" />
+                <TableCell align="right">{statusDecided || booking.bookingStatus} </TableCell>
+              </>
             ) : (
               <>
-                <ListItemIcon>Request will expire in {timeLeft} hours </ListItemIcon>
-                <ListItemIcon>
+                <TableCell align="center">Request will expire in {timeLeft} hours </TableCell>
+                <TableCell align="right" sx={{ display: "flex" }}>
                   <IconButton
                     color="success"
                     sx={{ display: "flex", flexDirection: "column" }}
@@ -120,8 +137,7 @@ function BookingList({ booking }: { booking: Booking }) {
                     <CheckCircleOutlineIcon />
                     <Typography>Approve</Typography>
                   </IconButton>
-                </ListItemIcon>
-                <ListItemIcon sx={{ mr: 2 }}>
+
                   <IconButton
                     color="error"
                     sx={{ display: "flex", flexDirection: "column" }}
@@ -130,12 +146,12 @@ function BookingList({ booking }: { booking: Booking }) {
                     <BlockOutlinedIcon />
                     <Typography>Reject</Typography>
                   </IconButton>
-                </ListItemIcon>
+                </TableCell>
               </>
             )}
           </>
         )}
-      </ListItem>
+      </TableRow>
     </>
   );
 }
