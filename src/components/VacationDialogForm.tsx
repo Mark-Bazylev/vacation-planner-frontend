@@ -130,6 +130,18 @@ export default function VacationDialogForm(props: VacationDialogProps) {
           error={!!errors.price}
           helperText={errors.price?.message || " "}
         />
+
+        <TextField
+          type="number"
+          label="Allocations"
+          {...register("allocations", {
+            required: "Allocations must be provided",
+            min: { value: 1, message: "Must be at least 1" },
+          })}
+          error={!!errors.allocations}
+          helperText={errors.allocations?.message || " "}
+        />
+
         <FileInput
           vacationImage={vacation?.imageName}
           {...register("imageFile", {

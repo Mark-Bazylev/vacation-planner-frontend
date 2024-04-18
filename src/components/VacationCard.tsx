@@ -6,6 +6,7 @@ import {
   CardMedia,
   Chip,
   CircularProgress,
+  Stack,
   Typography,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -19,6 +20,7 @@ import { followVacation } from "../redux/vacation/vacationSlice";
 import { useState } from "react";
 import VacationDialogForm from "./VacationDialogForm";
 import VacationDialogDeleteWarning from "./VacationDialogDeleteWarning";
+import { ConfirmDialog } from "./ConfirmDialog";
 export default function VacationCard({ vacation: vacationDetails }: { vacation: VacationDetails }) {
   const user = useAppSelector((state) => state.auth.user);
   const isFollowed = vacationDetails.followers.includes(user?._id || "");
@@ -29,6 +31,8 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
   };
   const [isLoadingFollow, setIsLoadingFollow] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   function handleCloseDialog() {
     setOpenDialog(false);
@@ -36,6 +40,10 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
   function handleCloseDeleteDialog() {
     setOpenDeleteDialog(false);
   }
+  function handleCloseConfirmDialog() {
+    setOpenConfirmDialog(false);
+  }
+
   async function handleFollow() {
     try {
       setIsLoadingFollow(true);
@@ -139,11 +147,19 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
       >
         <Typography>{vacationDetails.description}</Typography>
       </CardContent>
-      <Box sx={{ display: "flex", justifyContent: "center", mt: -3, px: 1, py: 2 }}>
-        <Button variant={"contained"} sx={{ width: "80%" }}>
+      <Stack sx={{ display: "flex", alignItems: "center", mt: -3, px: 1, py: 2 }}>
+        <Typography>
+          {vacationDetails.allocations - vacationDetails.bookings?.length} Places left
+        </Typography>
+        <Button
+          disabled={vacationDetails.allocations - vacationDetails.bookings?.length === 0}
+          variant={"contained"}
+          sx={{ width: "80%" }}
+          onClick={() => setOpenConfirmDialog(true)}
+        >
           {vacationDetails.price}$
         </Button>
-      </Box>
+      </Stack>
       {openDialog && (
         <VacationDialogForm
           vacation={vacationDetails}
@@ -156,6 +172,13 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
         onClose={handleCloseDeleteDialog}
         vacationId={vacationDetails._id}
       />
+      {openConfirmDialog && (
+        <ConfirmDialog
+          vacationId={vacationDetails._id}
+          open={openConfirmDialog}
+          onClose={handleCloseConfirmDialog}
+        />
+      )}
     </Card>
   );
 }

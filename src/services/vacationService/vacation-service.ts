@@ -1,10 +1,13 @@
 import { httpService } from "../http-service";
+import { User } from "../authService/auth-service";
 
 export interface PageQuery {
   pageIndex: number;
   isFollowed?: boolean;
   isCheckInNotStarted?: boolean;
   isActiveVacation?: boolean;
+  startingDate: string;
+  endingDate: string;
 }
 export interface VacationDetails {
   _id: string;
@@ -14,8 +17,25 @@ export interface VacationDetails {
   checkOut: Date;
   price: string;
   imageName: string;
+  allocations: number;
   followers: string[];
+  bookings: Booking[];
 }
+
+export interface Booking {
+  _id: string;
+  vacationId: string;
+  userId: string;
+  bookingStatus: BookingStatus;
+  user: User;
+  createdAt: string;
+}
+export enum BookingStatus {
+  approved = "approved",
+  pending = "pending",
+  rejected = "rejected",
+}
+
 class VacationService {
   async getVacation(id: string) {
     const res = await httpService.get("vacations/get/", { params: id });
@@ -23,6 +43,11 @@ class VacationService {
   }
   async getVacationByPage(pageQuery: PageQuery) {
     const res = await httpService.get("vacations/byPage/", { params: pageQuery });
+    return res.data;
+  }
+
+  async getBookedVacations(pageQuery: { pageIndex: number }) {
+    const res = await httpService.get("vacations/bookedVacations/", { params: pageQuery });
     return res.data;
   }
 
@@ -64,6 +89,16 @@ class VacationService {
   }
   async deleteVacation(vacationId: string) {
     const res = await httpService.delete(`vacations/delete/${vacationId}`);
+    return res.data;
+  }
+
+  async bookVacation(vacationId: string) {
+    const res = await httpService.post(`vacations/book/${vacationId}`);
+    return res.data;
+  }
+
+  async setBookingsStatus(bookingId: string, status: BookingStatus) {
+    const res = await httpService.post(`vacations/setBookingStatus/${bookingId}`, { status });
     return res.data;
   }
 }

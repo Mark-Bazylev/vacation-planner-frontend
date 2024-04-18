@@ -1,5 +1,10 @@
 import { httpService } from "../http-service";
 
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+}
 export interface LoginParams {
   email: string;
   password: string;
@@ -21,7 +26,6 @@ class AuthService {
   }
 
   setAuthToken(token: string | null) {
-    console.log("got here", token);
     if (token) {
       window.localStorage.setItem(AUTH_TOKEN_KEY, token);
     } else {

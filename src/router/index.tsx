@@ -7,6 +7,8 @@ import RegisterPage from "../pages/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFoundPage from "../pages/NotFoundPage";
 import { VacationsReportPage } from "../pages/VacationsReportPage";
+import { MyBookings } from "../pages/MyBookings";
+import { ManageBookings } from "../pages/ManageBookings";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +25,14 @@ export const router = createBrowserRouter([
           {
             path: "vacationsReport",
             element: <VacationsReportPage />,
+          },
+          {
+            path: "myBookings",
+            element: <MyBookings />,
+          },
+          {
+            path: "manageBookings",
+            element: <ManageBookings />,
           },
         ],
       },

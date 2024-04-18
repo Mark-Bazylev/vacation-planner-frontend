@@ -19,7 +19,7 @@ import { useState } from "react";
 import VacationDialogForm from "../components/VacationDialogForm";
 import { signOut } from "../redux/authentication/authSlice";
 import { grey } from "@mui/material/colors";
-
+import BookIcon from "@mui/icons-material/Book";
 const StyledGrid = styled(Grid)({
   display: "flex",
   flexDirection: "row",
@@ -53,29 +53,49 @@ export default function MainLayout() {
               </Typography>
             </StyledGrid>
             <StyledGrid item xs={6}>
-              {user?.role === "admin" && (
-                <>
+              <>
+                <IconButton
+                  component={NavLink}
+                  to={"/home"}
+                  sx={{ display: "flex", flexDirection: "column", color: "inherit" }}
+                >
+                  <CalendarMonthIcon />
+                  <Typography variant={"caption"}>Vacations</Typography>
+                </IconButton>
+                {user?.role === "admin" ? (
+                  <>
+                    <IconButton color="inherit" onClick={() => setOpenDialog(true)}>
+                      <AddCircleIcon sx={{ fontSize: "40px" }} />
+                    </IconButton>
+                    <IconButton
+                      component={NavLink}
+                      to={"/vacationsReport"}
+                      sx={{ display: "flex", flexDirection: "column", color: "inherit" }}
+                    >
+                      <BarChartIcon />
+                      <Typography variant={"caption"}>Stats</Typography>
+                    </IconButton>
+
+                    <IconButton
+                      component={NavLink}
+                      to={"/manageBookings"}
+                      sx={{ display: "flex", flexDirection: "column", color: "inherit" }}
+                    >
+                      <BookIcon />
+                      <Typography variant={"caption"}>Manage Bookings</Typography>
+                    </IconButton>
+                  </>
+                ) : (
                   <IconButton
                     component={NavLink}
-                    to={"/home"}
+                    to={"/myBookings"}
                     sx={{ display: "flex", flexDirection: "column", color: "inherit" }}
                   >
-                    <CalendarMonthIcon />
-                    <Typography variant={"caption"}>Vacations</Typography>
+                    <BookIcon />
+                    <Typography variant={"caption"}>My Bookings</Typography>
                   </IconButton>
-                  <IconButton color="inherit" onClick={() => setOpenDialog(true)}>
-                    <AddCircleIcon sx={{ fontSize: "40px" }} />
-                  </IconButton>
-                  <IconButton
-                    component={NavLink}
-                    to={"/vacationsReport"}
-                    sx={{ display: "flex", flexDirection: "column", color: "inherit" }}
-                  >
-                    <BarChartIcon />
-                    <Typography variant={"caption"}>Stats</Typography>
-                  </IconButton>
-                </>
-              )}
+                )}
+              </>
             </StyledGrid>
             <StyledGrid item sx={{ justifyContent: "end" }} xs={2}>
               <Typography>

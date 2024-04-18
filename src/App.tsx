@@ -3,29 +3,33 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import { createTheme, IconButton, ThemeProvider } from "@mui/material";
 import { closeSnackbar, SnackbarProvider } from "notistack";
+import { LocalizationProvider } from "@mui/x-date-pickers-pro";
+import { AdapterDateFns } from "@mui/x-date-pickers-pro/AdapterDateFnsV3";
 
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider
-        iconVariant={{ error: <ErrorOutlineOutlinedIcon sx={{ mr: 1 }} /> }}
-        action={(snackbarId) => (
-          <IconButton
-            sx={{ color: "white", textTransform: "none" }}
-            onClick={() => closeSnackbar(snackbarId)}
-          >
-            <CloseOutlinedIcon />
-          </IconButton>
-        )}
-      >
-        <RouterProvider router={router} />
-      </SnackbarProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <SnackbarProvider
+          iconVariant={{ error: <ErrorOutlineOutlinedIcon sx={{ mr: 1 }} /> }}
+          action={(snackbarId) => (
+            <IconButton
+              sx={{ color: "white", textTransform: "none" }}
+              onClick={() => closeSnackbar(snackbarId)}
+            >
+              <CloseOutlinedIcon />
+            </IconButton>
+          )}
+        >
+          <RouterProvider router={router} />
+        </SnackbarProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }
+
 const theme = createTheme({
   palette: {
     primary: {

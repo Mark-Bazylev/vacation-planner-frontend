@@ -1,22 +1,26 @@
 import { createAppSlice } from "../createAppSlice";
 import {
+  BookingStatus,
   PageQuery,
   VacationDetails,
   vacationService,
 } from "../../services/vacationService/vacation-service";
 
 export type VacationReport = Pick<VacationDetails, "destination" | "followers" | "_id">[];
+
 interface VacationSliceState {
   currentVacation: VacationDetails | null;
   vacations: VacationDetails[];
   vacationsCount: number;
   vacationsReport: VacationReport;
+  bookedVacations: VacationDetails[];
 }
 const initialState: VacationSliceState = {
   currentVacation: null,
   vacations: [],
   vacationsCount: 1,
   vacationsReport: [],
+  bookedVacations: [],
 };
 const vacationSlice = createAppSlice({
   name: "vacation",
@@ -62,6 +66,16 @@ const vacationSlice = createAppSlice({
         },
       },
     ),
+
+    bookVacation: create.asyncThunk(async (vacationId: string) => {
+      return await vacationService.bookVacation(vacationId);
+    }),
+    setBookingStatus: create.asyncThunk(
+      async ({ bookingId, status }: { bookingId: string; status: BookingStatus }) => {
+        return await vacationService.setBookingsStatus(bookingId, status);
+      },
+    ),
+
     getVacation: create.asyncThunk(
       async (id: string) => {
         return await vacationService.getVacation(id);
@@ -80,6 +94,17 @@ const vacationSlice = createAppSlice({
         fulfilled(state, action) {
           state.vacations = action.payload.vacations;
           state.vacationsCount = action.payload.count;
+        },
+      },
+    ),
+    getBookedVacations: create.asyncThunk(
+      async (pageQuery: { pageIndex: number }) => {
+        return await vacationService.getBookedVacations(pageQuery);
+      },
+      {
+        fulfilled(state, action) {
+          console.log(action.payload);
+          state.bookedVacations = action.payload;
         },
       },
     ),
@@ -118,10 +143,13 @@ const vacationSlice = createAppSlice({
 export const {
   getVacationsByPage,
   getVacationsReport,
+  getBookedVacations,
   followVacation,
   addVacation,
   editVacation,
   deleteVacation,
+  bookVacation,
+  setBookingStatus,
 } = vacationSlice.actions;
 
 export default vacationSlice.reducer;

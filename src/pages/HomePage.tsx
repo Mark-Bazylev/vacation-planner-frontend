@@ -1,6 +1,6 @@
 import VacationCard from "../components/VacationCard";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { getVacationsByPage } from "../redux/vacation/vacationSlice";
 import { PageQuery } from "../services/vacationService/vacation-service";
 import {
@@ -10,12 +10,15 @@ import {
   FormControlLabel,
   FormGroup,
   Pagination,
+  Slider,
   Stack,
   Switch,
   Typography,
 } from "@mui/material";
 import { Backdrop } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import "rsuite/dist/rsuite.min.css";
+import { VacationOptions } from "../components/VacationOptions";
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
@@ -28,27 +31,9 @@ export default function HomePage() {
     isFollowed: false,
     isCheckInNotStarted: false,
     isActiveVacation: false,
+    startingDate: "",
+    endingDate: "",
   });
-
-  const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.name === "isFollowed") {
-      setFilter({
-        pageIndex: 1,
-        isActiveVacation: filter.isActiveVacation,
-        isCheckInNotStarted: filter.isCheckInNotStarted,
-        isFollowed: event.target.checked,
-      });
-    } else {
-      setFilter({
-        pageIndex: 1,
-        isActiveVacation: false,
-        isCheckInNotStarted: false,
-        isFollowed: filter.isFollowed,
-        [event.target.name]: event.target.checked,
-      });
-    }
-    setPage(1);
-  };
 
   useEffect(() => {
     async function getVacations() {
@@ -63,88 +48,60 @@ export default function HomePage() {
     }
     getVacations();
   }, [filter]);
-  async function handlePage(event: ChangeEvent<unknown>, pageNumber: number) {
-    try {
-      setFilter({ ...filter, pageIndex: pageNumber });
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setPage(pageNumber);
-    }
+  function handlePage(event: ChangeEvent<unknown>, pageNumber: number) {
+    setFilter({ ...filter, pageIndex: pageNumber });
+    setPage(pageNumber);
   }
+  function handleSelect(query: Omit<PageQuery, "pageIndex" | "isFollowed">) {
+    setPage(1);
+    setFilter({
+      ...query,
+      pageIndex: 1,
+      isFollowed: filter.isFollowed,
+    });
+  }
+  function handleLikedVacations() {
+    setPage(1);
+    setFilter({
+      ...filter,
+      pageIndex: 1,
+      isFollowed: !filter.isFollowed,
+    });
+  }
+
+  const [sliderValue, setSliderValue] = useState(2);
 
   return (
     <>
-      <AppBar
-        color="transparent"
-        position="fixed"
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          mt: 8,
-          boxShadow: "none",
-        }}
-      >
-        <Stack
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            pb: 2,
-            px: 3,
-            bgcolor: "primary.main",
-            borderRadius: " 0% 0% 40% 40% / 0% 0% 80% 80%;",
-          }}
-        >
-          <FormGroup sx={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-            {user?.role === "user" && (
-              <FormControlLabel
-                control={
-                  <Switch
-                    color={"secondary"}
-                    name={"isFollowed"}
-                    checked={filter.isFollowed}
-                    onChange={handleFilter}
-                  />
-                }
-                label="My Vacations"
-              />
-            )}
+      <Stack mt={2} gap={2} sx={{ display: "flex", alignItems: "center" }}>
+        <Box gap={2} sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+          <VacationOptions onOptionSelect={handleSelect} />
+
+          {user?.role === "user" && (
             <FormControlLabel
               control={
                 <Switch
                   color={"secondary"}
-                  name={"isCheckInNotStarted"}
-                  checked={filter.isCheckInNotStarted}
-                  onChange={handleFilter}
+                  name={"isFollowed"}
+                  checked={filter.isFollowed}
+                  onChange={handleLikedVacations}
                 />
               }
-              label="Future Vacations"
+              label="Liked Vacations"
             />
-            <FormControlLabel
-              control={
-                <Switch
-                  color={"secondary"}
-                  name={"isActiveVacation"}
-                  checked={filter.isActiveVacation}
-                  onChange={handleFilter}
-                />
-              }
-              label="Ongoing"
-            />
-          </FormGroup>
-          <Pagination
-            count={Math.ceil(vacationsCount / 10)}
-            page={page}
-            onChange={handlePage}
-            color={"secondary"}
-          />
-        </Stack>
-      </AppBar>
+          )}
+        </Box>
+
+        <Pagination
+          count={Math.ceil(vacationsCount / 10)}
+          page={page}
+          onChange={handlePage}
+          color={"secondary"}
+        />
+      </Stack>
 
       <Box
         sx={{
-          mt: { xs: 16, sm: 12 },
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
