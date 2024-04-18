@@ -1,16 +1,13 @@
 import VacationCard from "../components/VacationCard";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { getVacationsByPage } from "../redux/vacation/vacationSlice";
 import { PageQuery } from "../services/vacationService/vacation-service";
 import {
-  AppBar,
   Box,
   CircularProgress,
   FormControlLabel,
-  FormGroup,
   Pagination,
-  Slider,
   Stack,
   Switch,
   Typography,
@@ -68,8 +65,6 @@ export default function HomePage() {
       isFollowed: !filter.isFollowed,
     });
   }
-
-  const [sliderValue, setSliderValue] = useState(2);
 
   return (
     <>

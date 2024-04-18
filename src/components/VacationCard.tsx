@@ -21,6 +21,7 @@ import { useState } from "react";
 import VacationDialogForm from "./VacationDialogForm";
 import VacationDialogDeleteWarning from "./VacationDialogDeleteWarning";
 import { ConfirmDialog } from "./ConfirmDialog";
+
 export default function VacationCard({ vacation: vacationDetails }: { vacation: VacationDetails }) {
   const user = useAppSelector((state) => state.auth.user);
   const isFollowed = vacationDetails.followers.includes(user?._id || "");
@@ -32,8 +33,9 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
   const [isLoadingFollow, setIsLoadingFollow] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  console.log(vacationDetails.bookings);
+  const alreadyBooked = vacationDetails.bookings.find((booking) => user?._id === booking.userId);
   function handleCloseDialog() {
     setOpenDialog(false);
   }
@@ -148,16 +150,13 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
         <Typography>{vacationDetails.description}</Typography>
       </CardContent>
       <Stack sx={{ display: "flex", alignItems: "center", mt: -3, px: 1, py: 2 }}>
-        <Typography>
-          {vacationDetails.allocations - vacationDetails.bookings?.length} Places left
-        </Typography>
         <Button
-          disabled={vacationDetails.allocations - vacationDetails.bookings?.length === 0}
+          disabled={!!alreadyBooked}
           variant={"contained"}
           sx={{ width: "80%" }}
           onClick={() => setOpenConfirmDialog(true)}
         >
-          {vacationDetails.price}$
+          {`${alreadyBooked ? alreadyBooked.bookingStatus : vacationDetails.price + "$"}`}
         </Button>
       </Stack>
       {openDialog && (

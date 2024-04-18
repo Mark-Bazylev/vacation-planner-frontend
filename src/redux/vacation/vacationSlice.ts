@@ -14,6 +14,7 @@ interface VacationSliceState {
   vacationsCount: number;
   vacationsReport: VacationReport;
   bookedVacations: VacationDetails[];
+  bookedVacationsCount: number;
 }
 const initialState: VacationSliceState = {
   currentVacation: null,
@@ -21,6 +22,7 @@ const initialState: VacationSliceState = {
   vacationsCount: 1,
   vacationsReport: [],
   bookedVacations: [],
+  bookedVacationsCount: 1,
 };
 const vacationSlice = createAppSlice({
   name: "vacation",
@@ -67,9 +69,20 @@ const vacationSlice = createAppSlice({
       },
     ),
 
-    bookVacation: create.asyncThunk(async (vacationId: string) => {
-      return await vacationService.bookVacation(vacationId);
-    }),
+    bookVacation: create.asyncThunk(
+      async (vacationId: string) => {
+        return await vacationService.bookVacation(vacationId);
+      },
+      {
+        fulfilled(state, action) {
+          const vacation = state.vacations.find(
+            (vacation) => vacation._id === action.payload.vacationId,
+          );
+          vacation?.bookings.push(action.payload);
+        },
+      },
+    ),
+
     setBookingStatus: create.asyncThunk(
       async ({ bookingId, status }: { bookingId: string; status: BookingStatus }) => {
         return await vacationService.setBookingsStatus(bookingId, status);
@@ -103,8 +116,8 @@ const vacationSlice = createAppSlice({
       },
       {
         fulfilled(state, action) {
-          console.log(action.payload);
-          state.bookedVacations = action.payload;
+          state.bookedVacations = action.payload.vacations;
+          state.bookedVacationsCount = action.payload.count;
         },
       },
     ),

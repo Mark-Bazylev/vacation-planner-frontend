@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { getBookedVacations } from "../redux/vacation/vacationSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   Backdrop,
   CircularProgress,
+  Pagination,
   Paper,
   Stack,
   Table,
@@ -19,17 +20,18 @@ import { grey } from "@mui/material/colors";
 import { BookingRow } from "../components/BookingRow";
 export function ManageBookings() {
   const dispatch = useAppDispatch();
-  const { bookedVacations } = useAppSelector((state) => state.vacations);
+  const { bookedVacations, bookedVacationsCount } = useAppSelector((state) => state.vacations);
   const [isLoading, setIsLoading] = useState(false);
-  const [filter, setFilter] = useState({ pageIndex: 1 });
-  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
+  function handlePage(event: ChangeEvent<unknown>, pageNumber: number) {
+    setPage(pageNumber);
+  }
   useEffect(() => {
     async function getVacations() {
       try {
         setIsLoading(true);
-        const res = await dispatch(getBookedVacations(filter)).unwrap();
-        console.log(res);
+        await dispatch(getBookedVacations({ pageIndex: page })).unwrap();
       } catch (e) {
         console.log(e);
       } finally {
@@ -37,11 +39,16 @@ export function ManageBookings() {
       }
     }
     getVacations();
-  }, [filter]);
+  }, [page]);
   return (
     <>
-      <div>Pagination goes here {filter.pageIndex}</div>
-      <div>Manage Booking Page</div>
+      <Pagination
+        count={Math.ceil(bookedVacationsCount / 10)}
+        page={page}
+        onChange={handlePage}
+        color={"secondary"}
+        sx={{ my: 2 }}
+      />
 
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">

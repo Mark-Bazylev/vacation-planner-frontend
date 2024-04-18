@@ -38,7 +38,7 @@ export default function MainLayout() {
     dispatch(signOut());
   }
   return (
-    <Box>
+    <Box sx={{ height: "100%" }}>
       <AppBar position={"sticky"} sx={{ height: "64px" }}>
         <Toolbar>
           <Grid container direction="row" justifyContent="center" alignItems="center" flexGrow={1}>
@@ -110,14 +110,14 @@ export default function MainLayout() {
           </Grid>
         </Toolbar>
       </AppBar>
-      <Box sx={{ bgcolor: grey[100] }}>
+      <Box sx={{ bgcolor: grey[100], display: "flex", flexDirection: "column", height: "auto" }}>
         <Container
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
             alignItems: "center",
             bgcolor: "transparent",
+            height: "auto",
           }}
         >
           <Outlet />

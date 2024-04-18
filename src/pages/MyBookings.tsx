@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { getBookedVacations } from "../redux/vacation/vacationSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Pagination,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,15 +19,19 @@ import { format } from "date-fns";
 
 export function MyBookings() {
   const dispatch = useAppDispatch();
-  const { bookedVacations } = useAppSelector((state) => state.vacations);
+  const { bookedVacations, bookedVacationsCount } = useAppSelector((state) => state.vacations);
   const [isLoading, setIsLoading] = useState(false);
-  const [filter, setFilter] = useState({ pageIndex: 1 });
+  const [page, setPage] = useState(1);
+
+  function handlePage(event: ChangeEvent<unknown>, pageNumber: number) {
+    setPage(pageNumber);
+  }
+
   useEffect(() => {
     async function getVacations() {
       try {
         setIsLoading(true);
-        const res = await dispatch(getBookedVacations(filter)).unwrap();
-        console.log(res);
+        await dispatch(getBookedVacations({ pageIndex: page })).unwrap();
       } catch (e) {
         console.log(e);
       } finally {
@@ -34,10 +39,16 @@ export function MyBookings() {
       }
     }
     getVacations();
-  }, [filter]);
+  }, [page]);
   return (
     <>
-      <div>Pagination section here {filter.pageIndex}</div>
+      <Pagination
+        count={Math.ceil(bookedVacationsCount / 10)}
+        page={page}
+        onChange={handlePage}
+        color={"secondary"}
+        sx={{ my: 2 }}
+      />
 
       <List
         sx={{

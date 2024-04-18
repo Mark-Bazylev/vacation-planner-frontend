@@ -3,10 +3,6 @@ import {
   CircularProgress,
   Collapse,
   IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Stack,
   Table,
   TableBody,
@@ -115,9 +111,12 @@ function BookingTableRow({ booking }: { booking: Booking }) {
         <TableCell>{`${booking.user?.firstName} ${booking.user?.lastName}`} </TableCell>
 
         {loading ? (
-          <TableCell sx={{ mr: 6 }}>
-            <CircularProgress />
-          </TableCell>
+          <>
+            <TableCell align="right" />
+            <TableCell align="right" sx={{ pr: 9 }}>
+              <CircularProgress />
+            </TableCell>
+          </>
         ) : (
           <>
             {statusDecided || booking.bookingStatus !== BookingStatus.pending ? (

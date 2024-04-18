@@ -1,4 +1,4 @@
-import { Box, Slider, Stack, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import React, { useRef, useState, FC } from "react";
 import { DateRangePicker } from "rsuite";
 import { DateRange } from "rsuite/DateRangePicker";
