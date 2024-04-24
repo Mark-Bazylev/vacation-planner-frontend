@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   Backdrop,
   CircularProgress,
+  Grid,
   List,
   ListItem,
   ListItemAvatar,
@@ -87,31 +88,41 @@ function VacationListItem({ vacation }: { vacation: VacationDetails }) {
     checkIn: format(new Date(vacation.checkIn), "dd/LL/yyyy"),
     checkOut: format(new Date(vacation.checkOut), "dd/LL/yyyy"),
   };
-  return (
-    <ListItem sx={{ display: "flex", gap: 2 }}>
-      <ListItemAvatar>
-        <img width="100px" src={vacation.imageName} alt="" />
-      </ListItemAvatar>
-      <ListItemText
-        primary={vacation.destination}
-        secondary={`${formattedDate.checkIn} - ${formattedDate.checkOut}`}
-      />
 
-      <ListItemText primary={`$ ${vacation.price}`} />
-      {timeLeft <= 0 && vacation.bookings[0].bookingStatus === BookingStatus.pending ? (
-        <ListItemText
-          primary={BookingStatus.rejected}
-          secondary={`expired ${-timeLeft} hours ago`}
-        />
-      ) : (
-        <ListItemText
-          primary={vacation.bookings[0].bookingStatus}
-          secondary={
-            vacation.bookings[0].bookingStatus === BookingStatus.pending &&
-            `expires in ${timeLeft} hours`
-          }
-        />
-      )}
+  return (
+    <ListItem>
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
+          <ListItemAvatar>
+            <img width="100px" src={vacation.imageName} alt="" />
+          </ListItemAvatar>
+        </Grid>
+        <Grid item xs={6}>
+          <ListItemText
+            primary={vacation.destination}
+            secondary={`${formattedDate.checkIn} - ${formattedDate.checkOut}`}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <ListItemText primary={`$ ${vacation.price}`} />
+        </Grid>
+        <Grid item xs={2}>
+          {timeLeft <= 0 && vacation.bookings[0].bookingStatus === BookingStatus.pending ? (
+            <ListItemText
+              primary={BookingStatus.rejected}
+              secondary={`expired ${-timeLeft} hours ago`}
+            />
+          ) : (
+            <ListItemText
+              primary={vacation.bookings[0].bookingStatus}
+              secondary={
+                vacation.bookings[0].bookingStatus === BookingStatus.pending &&
+                `expires in ${timeLeft} hours`
+              }
+            />
+          )}
+        </Grid>
+      </Grid>
     </ListItem>
   );
 }
