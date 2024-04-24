@@ -34,7 +34,7 @@ export default function VacationCard({ vacation: vacationDetails }: { vacation: 
   const [openDialog, setOpenDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const alreadyBooked = vacationDetails.bookings.find((booking) => user?._id === booking.userId);
+  const alreadyBooked = vacationDetails.bookings?.find((booking) => user?._id === booking.userId);
   function handleCloseDialog() {
     setOpenDialog(false);
   }
